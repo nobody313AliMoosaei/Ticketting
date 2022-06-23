@@ -75,8 +75,8 @@ namespace CoreLayer.Services
                 return false;
             var RoleUser = new Role()
             {
-                NameEnglish = "Supporter",
-                NamePersian = "پشتیبان"
+                NameEnglish = "Viewer",
+                NamePersian = "بیننده"
             };
             var UserCreate = new User()
             {
@@ -284,6 +284,7 @@ namespace CoreLayer.Services
                         if (time < TimeSpan.FromMinutes(6))
                         {
                             user.IsConfirmEmail = true;
+                            item.IsExpire = true;
                             Context_Db.SaveChanges();
                             return true;
                         }

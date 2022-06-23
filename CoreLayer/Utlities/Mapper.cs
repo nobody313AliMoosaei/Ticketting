@@ -26,6 +26,7 @@ namespace CoreLayer.Utlities
                         TicketId = item.Id,
                         Title = item.Title,
                         Description = item.Body,
+                        TimeInsert = item.InsertTime,
                         DataFile = "data:image/png;base64," + Convert.ToBase64String(item.ByteFile, 0, item.ByteFile.Length)
                     };
                     if (item.Responses != null && item.Responses.Count > 0)
@@ -36,7 +37,8 @@ namespace CoreLayer.Utlities
                             {
                                 Id = i.Id,
                                 Description = i.Body,
-                                Title = i.Title
+                                Title = i.Title,
+                                InsertTime = i.InsertTime
                             };
                             ticket.Responses.Add(respons);
                         }

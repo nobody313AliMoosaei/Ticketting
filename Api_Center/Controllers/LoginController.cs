@@ -86,9 +86,9 @@ namespace Api_Center.Controllers
             UserManager.SetToken(Value, code);
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Hi {user.FullName}");
-            sb.AppendLine($"Please enter this code in web site");
-            sb.AppendLine($"Code = {code}");
+            sb.AppendLine($"Hi {user.FullName}<br/>");
+            sb.AppendLine($"Please enter this code in web site<br/>");
+            sb.AppendLine($"Code = {code}<br/>");
             sb.AppendLine("good luck");
 
             var result = EmailService.SendEmail(user.Email, "Code Ticketting", sb.ToString());

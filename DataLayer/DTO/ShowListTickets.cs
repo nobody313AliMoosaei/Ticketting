@@ -12,7 +12,7 @@ namespace DataLayer.DTO
         public string Title { get; set; }
         public string Description { get; set; }
         public string DataFile { get; set; }
-
+        public DateTime TimeInsert { get; set; }
         public int UserId { get; set; }
         public string UserName { get; set; }
         public List<ResponsTicketForShow> Responses { get; set; } = new List<ResponsTicketForShow>();
@@ -22,5 +22,6 @@ namespace DataLayer.DTO
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public DateTime InsertTime { get; set; }
     }
 }
