@@ -94,11 +94,11 @@ namespace Api_Center
                 {
                     option.UseSqlServer(Configuration.GetConnectionString("SqlConnection"));
                 });
-                string PgHost = "ec2-34-200-35-222.compute-1.amazonaws.com";
-                string PgDatabase = "ddd03j90pam6bl";
-                string PgUserId = "zkmehfttfshfme";
+                string PgHost = "ec2-52-72-56-59.compute-1.amazonaws.com";
+                string PgDatabase = "d3jofhdllikjv1";
+                string PgUserId = "eobvloljgamflo";
                 string PgPort = "5432";
-                string PgPassword = "d23a0a80d69a6cab15d65b3465cab62be2c30a849d551457c661b682f286c411";
+                string PgPassword = "60c799305976e270a500f3975267e9155a76aa7c8ea85f3817784e648efe67cc";
 
                 var connStr = $"Server={PgHost};Port={PgPort};User Id={PgUserId};Password={PgPassword};Database={PgDatabase}";
                 services.AddEntityFrameworkNpgsql().AddDbContext<DataLayer.DataBase.Context_DB>(option =>
