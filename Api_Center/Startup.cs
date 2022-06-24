@@ -94,7 +94,8 @@ namespace Api_Center
                 {
                     option.UseSqlServer(Configuration.GetConnectionString("SqlConnection"));
                 });
-                string PgHost = "ec2-52-72-56-59.compute-1.amazonaws.com";
+                
+                /*string PgHost = "ec2-52-72-56-59.compute-1.amazonaws.com";
                 string PgDatabase = "d3jofhdllikjv1";
                 string PgUserId = "eobvloljgamflo";
                 string PgPort = "5432";
@@ -105,6 +106,7 @@ namespace Api_Center
                 {
                     option.UseNpgsql(connStr);
                 });
+                */
             }
             catch
             {
