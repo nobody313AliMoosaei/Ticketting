@@ -186,7 +186,11 @@ namespace Api_Center.Controllers
 
             if (UserId == 0)
                 return BadRequest("UserId == 0");
+            
             var user = UserManager.Get(UserId);
+            if (user == null)
+                return BadRequest("User Not Found");
+           /*
             if (user.IsConfirmEmail == false)
             {
 
@@ -198,6 +202,7 @@ namespace Api_Center.Controllers
                 }
 
             }
+            */
             string DataFileString = string.Empty;
             byte[] BinaryDataFile = null;
 
