@@ -152,6 +152,13 @@ namespace Api_Center.Controllers
             return Ok();
         }
         */
-       
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("/error")]
+       public IActionResult Error()
+        {
+            return BadRequest("Has a Error in api");
+        }
     }
 }

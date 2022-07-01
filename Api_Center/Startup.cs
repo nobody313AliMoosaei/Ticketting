@@ -93,6 +93,7 @@ namespace Api_Center
                 services.AddDbContext<DataLayer.DataBase.Context_DB>(option =>
                 {
                     option.UseSqlServer(Configuration.GetConnectionString("SqlConnection"));
+                    // Data Source=SQL8002.site4now.net;Initial Catalog=db_a8907f_alimoosaei;User Id=db_a8907f_alimoosaei_admin;Password=nobody3981231102
                 });                
             }
             catch
@@ -151,11 +152,14 @@ namespace Api_Center
         {
             if (env.IsDevelopment())
             {
+                app.UseExceptionHandler("/error");
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api_Center v1"));
+            }else
+            {
+                app.UseExceptionHandler("/error");
             }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
