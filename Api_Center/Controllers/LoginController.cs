@@ -155,10 +155,10 @@ namespace Api_Center.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("/error")]
+        [Route("/")]
        public IActionResult Error()
         {
-            return BadRequest("Has a Error in api");
+            return BadRequest("Error Page");
         }
     }
 }
