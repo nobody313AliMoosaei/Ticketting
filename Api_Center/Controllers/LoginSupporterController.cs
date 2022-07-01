@@ -26,31 +26,32 @@ namespace Api_Center.Controllers
         [HttpPost("LoginSupporter")]
         public IActionResult Login(DataLayer.DTO.UserAuthenticationDTO UserData)
         {
-            var ResultUser = UserManager.Authentication(UserData);
-            if (ResultUser == null)
-                return BadRequest();
-            var RolesUser = ResultUser.Roles.ToList();
-            bool flag = false;
-            for (int i = 0; i < RolesUser.Count; i++)
+            try
             {
-                if (RolesUser[i].NameEnglish.ToLower().Contains("supporter")
-                    || RolesUser[i].NamePersian.ToLower().Contains("پشتیبان"))
-                    flag = true;
-            }
-            if (flag)
-            {
-                var Token = methodHelper.CreatToken(ResultUser.Id, ResultUser.UserName);
-                return Ok(new
+                var ResultUser = UserManager.Authentication(UserData);
+                if (ResultUser == null)
+                    return BadRequest();
+                var RolesUser = ResultUser.Roles.ToList();
+                bool flag = false;
+                for (int i = 0; i < RolesUser.Count; i++)
                 {
-                    Id = ResultUser.Id,
-                    FullName = ResultUser.FullName,
-                    UserName = ResultUser.UserName,
-                    Email = ResultUser.Email,
-                    Token = Token
-                });
+                    if (RolesUser[i].NameEnglish.ToLower().Contains("supporter") || RolesUser[i].NamePersian.ToLower().Contains("پشتیبان"))
+                        flag = true;
+                }
+                if (flag)
+                {
+                    var Token = methodHelper.CreatToken(ResultUser.Id, ResultUser.UserName);
+                    return Ok(new
+                    {
+                        Id = ResultUser.Id,
+                        FullName = ResultUser.FullName,
+                        UserName = ResultUser.UserName,
+                        Email = ResultUser.Email,
+                        Token = Token
+                    });
+                }
+                return NotFound();
             }
-            return NotFound();
-
-        }
+            catch (Exception ex) { return BadRequest(ex.Message); }        }
     }
 }

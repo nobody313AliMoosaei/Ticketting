@@ -40,10 +40,17 @@ namespace Api_Center.Controllers
         [AllowAnonymous]
         public IActionResult GetAllTicket()
         {
-            var AllTickets = Context.Tickets.Include(t => t.User)
-                .Where(t => t.User.IsActive == true && t.User.IsRemove == false).Include(t => t.Responses).ToList();
-            var Tickets = Mapper.GetListTicketForShow(AllTickets);
-            return Ok(Tickets);
+            try
+            {
+                var AllTickets = Context.Tickets.Include(t => t.User)
+                    .Where(t => t.User.IsActive == true && t.User.IsRemove == false).Include(t => t.Responses).ToList();
+                var Tickets = Mapper.GetListTicketForShow(AllTickets);
+                return Ok(Tickets);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [AllowAnonymous]
@@ -51,47 +58,48 @@ namespace Api_Center.Controllers
         [HttpPost("AnswerToTicket")]
         public IActionResult AnswerToTicket(AnswerToTicketDTO Respons)
         {
-            if (Respons == null)
-                return BadRequest("Blank");
-
-            var user = UserManager.Get(Respons.UserId);
-            if (user == null)
-                return BadRequest("User Is Not Found");
-
-            var TicketUser = Context.Tickets.Include(t => t.Responses)
-                .Include(t => t.User).Where(t => t.User.Id == Respons.UserId)
-                .SingleOrDefault(t => t.Id == Respons.TicketId);
-            if (TicketUser == null)
-                return BadRequest("Ticket User Is Not Found");
-
-            Ticket ResponsTicket = new Ticket()
-            {
-                Title = Respons.Title,
-                Body = Respons.Description,
-                InsertTime = DateTime.Now
-            };
-            if (Respons.File != null && Respons.File.Length > 0)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    Respons.File.CopyTo(ms);
-                    var FileByte = ms.ToArray();
-                    string DataFile = Convert.ToBase64String(FileByte);
-
-                    ResponsTicket.ByteFile = FileByte;
-                    ResponsTicket.DataFile = DataFile;
-                }
-            }
             try
             {
+                if (Respons == null)
+                    return BadRequest("Blank");
+
+                var user = UserManager.Get(Respons.UserId);
+                if (user == null)
+                    return BadRequest("User Is Not Found");
+
+                var TicketUser = Context.Tickets.Include(t => t.Responses)
+                    .Include(t => t.User).Where(t => t.User.Id == Respons.UserId)
+                    .SingleOrDefault(t => t.Id == Respons.TicketId);
+                if (TicketUser == null)
+                    return BadRequest("Ticket User Is Not Found");
+
+                Ticket ResponsTicket = new Ticket()
+                {
+                    Title = Respons.Title,
+                    Body = Respons.Description,
+                    InsertTime = DateTime.Now
+                };
+                if (Respons.File != null && Respons.File.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        Respons.File.CopyTo(ms);
+                        var FileByte = ms.ToArray();
+                        string DataFile = Convert.ToBase64String(FileByte);
+
+                        ResponsTicket.ByteFile = FileByte;
+                        ResponsTicket.DataFile = DataFile;
+                    }
+                }
+
                 TicketUser.Responses.Add(ResponsTicket);
                 Context.SaveChanges();
                 string urlString = Url.Action(nameof(GetAllTicket), "Supporter", new { }, Request.Scheme);
                 return Created(urlString, true);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("Error");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -100,17 +108,24 @@ namespace Api_Center.Controllers
         [Authorize]
         public IActionResult ReportTicket(int UserId, int TicketId)
         {
-            var Admin = Context.Users.Where(t => t.IsAdmin == true).SingleOrDefault();
-            var ticket = Context.Tickets.Include(t => t.User).SingleOrDefault(t => t.Id == TicketId);
-            if (ticket == null)
-                return NotFound("NotFoound Ticket");
-            ticket.CounterReport++;
+            try
+            {
+                var Admin = Context.Users.Where(t => t.IsAdmin == true).SingleOrDefault();
+                var ticket = Context.Tickets.Include(t => t.User).SingleOrDefault(t => t.Id == TicketId);
+                if (ticket == null)
+                    return NotFound("NotFoound Ticket");
+                ticket.CounterReport++;
 
-            var resualtSendEmail = Emailmanager.SendEmail(Admin.Email, $"Report Ticket{ticket.Id}", $"please follow up <br></br>UserId={ticket.User.Id} <br></br>TicketId = {ticket.Id}");
-            if (resualtSendEmail != null && resualtSendEmail.IsCompleted)
-                return Ok("Email sent");
-            else
-                return BadRequest("Email could not be sent");
+                var resualtSendEmail = Emailmanager.SendEmail(Admin.Email, $"Report Ticket{ticket.Id}", $"please follow up <br></br>UserId={ticket.User.Id} <br></br>TicketId = {ticket.Id}");
+                if (resualtSendEmail != null && resualtSendEmail.IsCompleted)
+                    return Ok("Email sent");
+                else
+                    return BadRequest("Email could not be sent");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

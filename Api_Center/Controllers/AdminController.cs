@@ -32,18 +32,33 @@ namespace Api_Center.Controllers
         [Authorize]
         public IActionResult GetAllTickets()
         {
-            var tickets = TicketManager.Get();
-            var mapper = Mapper.GetListTicketForShow(tickets);
+            try
+            {
+                var tickets = TicketManager.Get();
+                var mapper = Mapper.GetListTicketForShow(tickets);
 
-            return Ok(mapper);
+                return Ok(mapper);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+        
         [HttpGet("GetAllUser")]
         [AllowAnonymous]
         [Authorize]
         public IActionResult GetAllUser()
         {
-            var AllUser = Mapper.GetUserForShow(UserManager.Get().ToList());
-            return Ok(AllUser);
+            try
+            {
+                var AllUser = Mapper.GetUserForShow(UserManager.Get().ToList());
+                return Ok(AllUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [AllowAnonymous]
@@ -51,22 +66,29 @@ namespace Api_Center.Controllers
         [HttpGet("GetAllSupporter")]
         public IActionResult GetAllSupporter()
         {
-            List<User> Supporeters = new List<User>();
-            var Users = Context.Users.Include(t => t.Roles).ToList();
-            foreach (var item in Users)
+            try
             {
-                var RolesUser = item.Roles.ToList();
-                foreach (var Role in RolesUser)
+                List<User> Supporeters = new List<User>();
+                var Users = Context.Users.Include(t => t.Roles).ToList();
+                foreach (var item in Users)
                 {
-                    if (Role.NameEnglish.ToLower().Contains("supporter"))
+                    var RolesUser = item.Roles.ToList();
+                    foreach (var Role in RolesUser)
                     {
-                        Supporeters.Add(item);
-                        break;
+                        if (Role.NameEnglish.ToLower().Contains("supporter"))
+                        {
+                            Supporeters.Add(item);
+                            break;
+                        }
                     }
                 }
+                var AllSupporter = Mapper.GetSupporterForShow(Supporeters);
+                return Ok(AllSupporter);
             }
-            var AllSupporter = Mapper.GetSupporterForShow(Supporeters);
-            return Ok(AllSupporter);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]
@@ -74,11 +96,18 @@ namespace Api_Center.Controllers
         [HttpGet("GetUserHasRequest")]
         public IActionResult GetUserHasRequest()
         {
-            var user = Context.Users.Where(t => t.CounterRequest > 0).ToList();
-            if (user == null)
-                return NotFound("There is no request");
-            var AllUser = Mapper.GetUserForShow(user);
-            return Ok(AllUser);
+            try
+            {
+                var user = Context.Users.Where(t => t.CounterRequest > 0).ToList();
+                if (user == null)
+                    return NotFound("There is no request");
+                var AllUser = Mapper.GetUserForShow(user);
+                return Ok(AllUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]
@@ -86,36 +115,50 @@ namespace Api_Center.Controllers
         [HttpGet("GetTicketsHasReport")]
         public IActionResult GetTicketHasReport()
         {
-            var Tickets = Context.Tickets.
-                Include(t => t.User).Include(t => t.Responses).Where(t => t.CounterReport > 0).ToList();
-            if (Tickets == null)
-                return NotFound();
-            var AllTicket = Mapper.GetListTicketForShow(Tickets);
-            return Ok(AllTicket);
+            try
+            {
+                var Tickets = Context.Tickets.
+                    Include(t => t.User).Include(t => t.Responses).Where(t => t.CounterReport > 0).ToList();
+                if (Tickets == null)
+                    return NotFound();
+                var AllTicket = Mapper.GetListTicketForShow(Tickets);
+                return Ok(AllTicket);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-    
+
         [AllowAnonymous]
         [Authorize]
         [HttpPost("AcceptRequestSupporter")]
         public IActionResult AcceptRequest(int UserId)
         {
-            if (UserId == 0)
-                return BadRequest();
-
-            var user = UserManager.Get(UserId);
-
-            if (user == null)
-                return NotFound("User = Null");
-
-            if (user.CounterRequest == 0 || user.CounterRequest < 0)
-                return BadRequest();
-
-            var r = UserManager.AddRole(UserId, "supporter", "پشتیبان");
-            if (r)
+            try
             {
-                return Created(Url.Action(nameof(GetAllSupporter), "Admin", new { }, Request.Scheme), true);
+                if (UserId == 0)
+                    return BadRequest();
+
+                var user = UserManager.Get(UserId);
+
+                if (user == null)
+                    return NotFound("User = Null");
+
+                if (user.CounterRequest == 0 || user.CounterRequest < 0)
+                    return BadRequest();
+
+                var r = UserManager.AddRole(UserId, "supporter", "پشتیبان");
+                if (r)
+                {
+                    return Created(Url.Action(nameof(GetAllSupporter), "Admin", new { }, Request.Scheme), true);
+                }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [AllowAnonymous]
@@ -143,10 +186,17 @@ namespace Api_Center.Controllers
         [HttpPost("DeleteTicket")]
         public IActionResult DeleteTicket(int UserID, int TicketID)
         {
-            var r = TicketManager.Delete(UserID, TicketID);
-            if (r)
-                return Created(Url.Action(nameof(GetAllTickets), "Admin", new { }, Request.Scheme), true);
-            return BadRequest();
+            try
+            {
+                var r = TicketManager.Delete(UserID, TicketID);
+                if (r)
+                    return Created(Url.Action(nameof(GetAllTickets), "Admin", new { }, Request.Scheme), true);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

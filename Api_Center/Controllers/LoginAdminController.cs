@@ -1,5 +1,6 @@
 ﻿using Api_Center.Models;
 using CoreLayer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,29 +22,31 @@ namespace Api_Center.Controllers
             methodHelper = helper;
         }
 
+        [AllowAnonymous]
         [HttpPost("LoginAdmin")]
         public IActionResult Login(DataLayer.DTO.UserAuthenticationDTO DataUser)
-        {
-            if (DataUser == null)
-                return NoContent();
-
-            var ResultUser = UserManager.Authentication(DataUser);
-            if (ResultUser == null)
-                return BadRequest();
-
-            if (ResultUser.IsAdmin)
+        {try
             {
-                var Token = methodHelper.CreatToken(ResultUser.Id, ResultUser.UserName);
-                return Ok(new
+                if (DataUser == null)
+                    return NoContent();
+                var ResultUser = UserManager.Authentication(DataUser);
+                if (ResultUser == null)
+                    return BadRequest();
+                if (ResultUser.IsAdmin)
                 {
-                    Id = ResultUser.Id,
-                    FullName = ResultUser.FullName,
-                    UserName = ResultUser.UserName,
-                    Email = ResultUser.Email,
-                    Token = Token
-                });
+                    var Token = methodHelper.CreatToken(ResultUser.Id, ResultUser.UserName);
+                    return Ok(new
+                    {
+                        Id = ResultUser.Id,
+                        FullName = ResultUser.FullName,
+                        UserName = ResultUser.UserName,
+                        Email = ResultUser.Email,
+                        Token = Token
+                    });
+                }
+                return NotFound();
             }
-            return NotFound();
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }
 }
