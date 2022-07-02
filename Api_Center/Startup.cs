@@ -18,7 +18,7 @@ using CoreLayer.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
-
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authentication.Google;
 using Api_Center.Models;
 
@@ -38,6 +38,18 @@ namespace Api_Center
         {
 
             services.AddControllers();
+
+
+            services.AddCors(o =>
+            {
+                o.AddPolicy("AllowAll", t => 
+                {
+                    t.AllowAnyOrigin()
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+                });
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api_Center", Version = "v1" });
@@ -161,6 +173,7 @@ namespace Api_Center
                 app.UseExceptionHandler("/error");
             }
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
 
             app.UseRouting();
 

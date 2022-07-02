@@ -12,11 +12,13 @@ using DataLayer.DataBase;
 using System.IO;
 using CoreLayer.Utlities;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Cors;
 
 namespace Api_Center.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAll")]
     public class TicketPageController : ControllerBase
     {
         #region Dependency Injection

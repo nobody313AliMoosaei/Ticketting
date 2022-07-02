@@ -14,11 +14,13 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using CoreLayer.Services;
 using Api_Center.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace Api_Center.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAll")]
     public class LoginController : ControllerBase
     {
         #region Dependency injection
@@ -35,6 +37,7 @@ namespace Api_Center.Controllers
         }
         #endregion
 
+        [EnableCors()]
         [AllowAnonymous]
         [HttpPost("LoginUsers")]
         public IActionResult Login([FromBody] UserAuthenticationDTO UserLoginData)
