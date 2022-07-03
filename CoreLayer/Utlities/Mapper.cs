@@ -27,7 +27,7 @@ namespace CoreLayer.Utlities
                         Title = item.Title,
                         Description = item.Body,
                         TimeInsert = item.InsertTime,
-                        DataFile = "data:image/png;base64," + Convert.ToBase64String(item.ByteFile, 0, item.ByteFile.Length)
+                       // DataFile = "data:image/png;base64," + Convert.ToBase64String(item.ByteFile, 0, item.ByteFile.Length)
                     };
                     if (item.Responses != null && item.Responses.Count > 0)
                     {

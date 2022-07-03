@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authentication.Google;
 using Api_Center.Models;
 
+
 namespace Api_Center
 {
     public class Startup
@@ -38,14 +39,14 @@ namespace Api_Center
         {
 
             services.AddControllers();
-
+            //GlobalConfiguration.Configuration.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
 
             services.AddCors(o =>
             {
                 o.AddPolicy("AllowAll", t => 
                 {
                     t.AllowAnyOrigin()
-                      .AllowAnyHeader()
+                      .AllowAnyHeader().SetIsOriginAllowed((host)=>true)
                       .AllowAnyMethod();
                 });
             });
@@ -164,7 +165,6 @@ namespace Api_Center
         {
             if (env.IsDevelopment())
             {
-                app.UseExceptionHandler("/error");
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api_Center v1"));
@@ -173,10 +173,11 @@ namespace Api_Center
                 app.UseExceptionHandler("/error");
             }
             app.UseHttpsRedirection();
-            app.UseCors("AllowAll");
-
+            
             app.UseRouting();
 
+            app.UseCors("AllowAll");
+            
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 
+
 namespace Api_Center.Controllers
 {
     [Route("api/[controller]")]
@@ -54,6 +55,7 @@ namespace Api_Center.Controllers
                 }
                 return NotFound();
             }
-            catch (Exception ex) { return BadRequest(ex.Message); }        }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
     }
 }

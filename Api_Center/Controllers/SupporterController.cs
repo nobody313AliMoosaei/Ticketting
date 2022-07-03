@@ -113,7 +113,12 @@ namespace Api_Center.Controllers
             try
             {
                 var Admin = Context.Users.Where(t => t.IsAdmin == true).SingleOrDefault();
-                var ticket = Context.Tickets.Include(t => t.User).SingleOrDefault(t => t.Id == TicketId);
+                var user = Context.Users.Include(t=>t.Tickets).SingleOrDefault(t=>t.Id==UserId);
+                if (user == null)
+                    return BadRequest("User Is Null");
+                if (Admin == null)
+                    return BadRequest("Admin Not Exist");
+                var ticket = user.Tickets.SingleOrDefault(t => t.Id == TicketId);
                 if (ticket == null)
                     return NotFound("NotFoound Ticket");
                 ticket.CounterReport++;

@@ -233,7 +233,7 @@ namespace Api_Center.Controllers
                      }
 
                  }
-                 */
+                 
                 string DataFileString = string.Empty;
                 byte[] BinaryDataFile = null;
 
@@ -246,12 +246,12 @@ namespace Api_Center.Controllers
                         DataFileString = Convert.ToBase64String(BinaryDataFile);
                     }
                 }
-
+                */
                 bool resault = TicketManager.Add(UserId, new AddTicketDTO()
                 {
-                    DataFile = DataFileString,
+                   // DataFile = DataFileString,
                     Description = TicketForAdd.Description,
-                    FileByte = BinaryDataFile,
+                    //FileByte = BinaryDataFile,
                     Title = TicketForAdd.Title
                 });
                 if (resault)
